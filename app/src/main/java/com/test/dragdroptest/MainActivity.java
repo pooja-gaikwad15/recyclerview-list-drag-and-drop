@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CustomListAdapter.Listener {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.textPreviousDate)
     TextView textPreviousDate;
+
+    @Bind(R.id.textEmptyList)
+    TextView textEmptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +47,28 @@ public class MainActivity extends AppCompatActivity {
             CustomListResponse response = getDummyResponseObject(getDummyJsonString());
 
             CustomListAdapter mYesterdayCustomListAdapter =
-                    new CustomListAdapter(this, response.previousDayCustomList);
+                    new CustomListAdapter(this, response.previousDayCustomList, this);
             recyclerPendingList.setAdapter(mYesterdayCustomListAdapter);
 
 
             CustomListAdapter mCustomListAdapter =
-                    new CustomListAdapter(this, response.customList);
+                    new CustomListAdapter(this, response.customList, this);
             recyclerView.setAdapter(mCustomListAdapter);
+
+            textEmptyList.setOnDragListener(mYesterdayCustomListAdapter
+                    .getDragInstance());
+
+            textEmptyList.setVisibility(View.GONE);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setEmptyList(boolean visibility) {
+        textEmptyList.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        recyclerPendingList.setVisibility(visibility ? View.GONE : View.VISIBLE);
     }
 
     private String getDummyJsonString() {

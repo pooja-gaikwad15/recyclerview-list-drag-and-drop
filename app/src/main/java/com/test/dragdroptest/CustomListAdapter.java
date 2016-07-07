@@ -2,7 +2,6 @@ package com.test.dragdroptest;
 
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,10 +23,13 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
 
     Context mContext;
     List<CustomList> mCustomList;
+    Listener mListener;
 
-    public CustomListAdapter(Context context, List<CustomList> customList) {
+    public CustomListAdapter(Context context, List<CustomList> customList,
+                             Listener listener) {
         this.mCustomList = customList;
         this.mContext = context;
+        this.mListener = listener;
     }
 
     @Override
@@ -59,7 +60,16 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
                 return true;
             }
         });
-        holder.cardView.setOnDragListener(new DragListener());
+        holder.cardView.setOnDragListener(new DragListener(mListener));
+    }
+
+    public DragListener getDragInstance() {
+        if (mListener != null) {
+            return new DragListener(mListener);
+        } else {
+            Log.e("Route Adapter: ", "Initialize listener first!");
+            return null;
+        }
     }
 
     @Override
@@ -73,6 +83,10 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
 
     public void updateCustomList(List<CustomList> customList) {
         this.mCustomList = customList;
+    }
+
+    public interface Listener {
+        void setEmptyList(boolean visibility);
     }
 
     public class CustomListViewHolder extends RecyclerView.ViewHolder {
@@ -102,6 +116,11 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
     public class DragListener implements View.OnDragListener {
 
         boolean isDropped = false;
+        Listener mListener;
+
+        public DragListener(Listener listener) {
+            this.mListener = listener;
+        }
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
@@ -126,13 +145,21 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
 
                     View viewSource = (View) event.getLocalState();
 
-                    if (v.getId() == R.id.cardView) {
+                    if (v.getId() == R.id.cardView || v.getId() == R.id.textEmptyList) {
+                        //RecyclerView target = (RecyclerView) v.getParent();
+                        RecyclerView target;
+                        if (v.getId() == R.id.textEmptyList) {
+                            target = (RecyclerView)
+                                    v.getRootView().findViewById(R.id.recyclerPendingList);
+                        } else {
+                            target = (RecyclerView) v.getParent();
+                            positionTarget = (int) v.getTag();
+                        }
+
                         RecyclerView source = (RecyclerView) viewSource.getParent();
-                        RecyclerView target = (RecyclerView) v.getParent();
 
                         CustomListAdapter adapterSource = (CustomListAdapter) source.getAdapter();
                         positionSource = (int) viewSource.getTag();
-                        positionTarget = (int) v.getTag();
 
                         CustomList customList = (CustomList) adapterSource.getCustomList().get(positionSource);
                         List<CustomList> customListSource = adapterSource.getCustomList();
@@ -151,6 +178,15 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
                         adapterTarget.updateCustomList(customListTarget);
                         adapterTarget.notifyDataSetChanged();
                         v.setVisibility(View.VISIBLE);
+
+                        if (source.getId() == R.id.recyclerPendingList
+                                && adapterSource.getItemCount() < 1) {
+                            mListener.setEmptyList(true);
+                        }
+
+                        if (v.getId() == R.id.textEmptyList) {
+                            mListener.setEmptyList(false);
+                        }
                     }
 
                     break;
