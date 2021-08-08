@@ -2,8 +2,6 @@ package com.test.dragdroptest;
 
 import android.content.ClipData;
 import android.content.Context;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -11,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -25,8 +26,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
     List<CustomList> mCustomList;
     Listener mListener;
 
-    public CustomListAdapter(Context context, List<CustomList> customList,
-                             Listener listener) {
+    public CustomListAdapter(Context context, List<CustomList> customList, Listener listener) {
         this.mCustomList = customList;
         this.mContext = context;
         this.mListener = listener;
@@ -50,15 +50,12 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
         holder.textEstimatedTime.setText("Estimated Time: " + customList.estimatedTime);
 
         holder.cardView.setTag(position);
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-                view.startDrag(data, shadowBuilder, view, 0);
-                view.setVisibility(View.INVISIBLE);
-                return true;
-            }
+        holder.cardView.setOnLongClickListener(view -> {
+            ClipData data = ClipData.newPlainText("", "");
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+            view.startDragAndDrop(data, shadowBuilder, view, 0);
+            view.setVisibility(View.INVISIBLE);
+            return true;
         });
         holder.cardView.setOnDragListener(new DragListener(mListener));
     }
@@ -91,19 +88,19 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Cu
 
     public class CustomListViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.textName)
+        @BindView(R.id.textName)
         TextView textName;
 
-        @Bind(R.id.textMobile)
+        @BindView(R.id.textMobile)
         TextView textMobile;
 
-        @Bind(R.id.textAddress)
+        @BindView(R.id.textAddress)
         TextView textAddress;
 
-        @Bind(R.id.textEstimatedTime)
+        @BindView(R.id.textEstimatedTime)
         TextView textEstimatedTime;
 
-        @Bind(R.id.cardView)
+        @BindView(R.id.cardView)
         CardView cardView;
 
         public CustomListViewHolder(View itemView) {

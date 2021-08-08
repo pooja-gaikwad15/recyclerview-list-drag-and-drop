@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
@@ -10,8 +10,7 @@
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="false">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/linearRowParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,7 +68,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/mediumGray"></View>
+                android:background="@color/mediumGray" />
 
             <Button
                 android:id="@+id/buttonAddDetails"
@@ -82,4 +81,4 @@
         </LinearLayout>
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
