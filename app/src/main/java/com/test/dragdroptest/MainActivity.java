@@ -1,32 +1,33 @@
 package com.test.dragdroptest;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements CustomListAdapter.Listener {
 
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    @Bind(R.id.textCurrentDate)
+    @BindView(R.id.textCurrentDate)
     TextView textCurrentDate;
 
-    @Bind(R.id.recyclerPendingList)
+    @BindView(R.id.recyclerPendingList)
     RecyclerView recyclerPendingList;
 
-    @Bind(R.id.textPreviousDate)
+    @BindView(R.id.textPreviousDate)
     TextView textPreviousDate;
 
-    @Bind(R.id.textEmptyList)
+    @BindView(R.id.textEmptyList)
     TextView textEmptyList;
 
     @Override
